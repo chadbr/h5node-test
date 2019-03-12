@@ -1,0 +1,10 @@
+{
+  "extends": "tslint-config-standard",
+  "rules": {
+    "semicolon": [ true, "always" ],
+    "space-before-function-paren": [false, "always"],
+    "member-ordering": [false],
+    "prefer-const": true,
+    "cyclomatic-complexity": [true, 20]
+  }
+}

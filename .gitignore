@@ -1,0 +1,15 @@
+node_modules
+build
+dist
+src/**.js
+test-results.xml
+
+coverage
+.nyc_output
+.ts-node
+*.log
+
+outDir
+out
+
+allTypes
