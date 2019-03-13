@@ -1,5 +1,7 @@
 import { hdf5, h5lt, h5tb } from 'hdf5';
 import { Access } from 'hdf5/lib/globals';
+import * as fs from 'fs';
+import * as path from 'path';
 
 export class App {
 
@@ -9,12 +11,12 @@ export class App {
     this.file = new hdf5.File('./dist/4d.h5', Access.ACC_RDONLY);
     try {
       console.log(process.cwd());
-      const path = '/test';
+      const h5path = '/test';
 
-      const dims = this.getDimensions(path, 'Fill');
+      const dims = this.getDimensions(h5path, 'Fill');
       console.log(dims);
 
-      const group = this.file.openGroup(path);
+      const group = this.file.openGroup(h5path);
       const dataset = h5lt.readDataset(group.id, 'Fill');
       console.log(dataset);
 
@@ -30,13 +32,16 @@ export class App {
 
           const subset = datasetAsTyped.subarray(start, end);
 
+          let rendered: string = '';
           // show rows with data
           for (let row = 0; row < dims.rows; row++) {
             const rowData = subset.subarray(row * dims.columns, (row * dims.columns) + dims.columns);
-            if (this.hasNumbers(rowData)) {
-              console.log(`${iteration} ${step} ${row} ${rowData.toString()}`);
-            }
+            rendered += `${rowData.toString()}\n`;
           }
+
+          const outfile = path.join(__dirname, iteration.toString() + `-` + step.toFixed() + `.csv`);
+          fs.writeFileSync(outfile, rendered);
+
         }
       }
 
@@ -58,7 +63,7 @@ export class App {
     const group = this.file.openGroup(path);
     const dims = group.getDatasetDimensions(property);
     console.log(`${property} ${dims}`);
-    const [iterations, steps, columns, rows] = dims;
+    const [iterations, steps, rows, columns] = dims;
     return { iterations: iterations, steps: steps, columns: columns, rows: rows };
   }
 }
